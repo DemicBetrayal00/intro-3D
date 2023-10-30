@@ -6,6 +6,7 @@
 #include "AIMesh.h"
 #include "Cube.h"
 #include "2DExamples.h"
+#include "TetraHedron.h"
 
 
 using namespace std;
@@ -26,6 +27,10 @@ CGPrincipleAxes* principleAxes = nullptr;
 Cube* cube = nullptr;
 AIMesh* creatureMesh = nullptr;
 AIMesh* planetMesh = nullptr;
+Tetrahedron* tetrahedron = nullptr;
+AIMesh* saber = nullptr;
+AIMesh* city2 = nullptr;
+
 
 // Window size
 const unsigned int initWidth = 512;
@@ -96,8 +101,9 @@ int main() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // setup background colour to be black
 	glClearDepth(1.0f);
 
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glPolygonMode(GL_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT, GL_FILL);
+	//glPolygonMode(GL_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	
 	glFrontFace(GL_CCW);
 	glEnable(GL_CULL_FACE);
@@ -108,11 +114,17 @@ int main() {
 	//
 	// Setup Textures, VBOs and other scene objects
 	//
-	mainCamera = new ArcballCamera(0.0f, 0.0f, 1.98595f, 55.0f, 1.0f, 0.1f, 500.0f);
+	mainCamera = new ArcballCamera(0.0f, 0.0f, 1.98595f, 55.0f, 1.0f, 0.1f, 3000.0f);
 	
 	principleAxes = new CGPrincipleAxes();
 
 	cube = new Cube();
+	tetrahedron = new Tetrahedron();
+
+	saber = new AIMesh("Assets\\saber.obj");
+
+	city2 = new AIMesh("Assets\\city.obj");
+	
 
 	creatureMesh = new AIMesh(string("Assets\\beast\\beast.obj"));
 	if (creatureMesh) {
@@ -197,8 +209,17 @@ void renderScene()
 
 #endif
 
-#if 1
-	
+#if 0
+
+	glLoadMatrixf((GLfloat*)&cameraTransform);
+	glDisable(GL_CULL_FACE);
+	tetrahedron->render();
+
+
+#endif
+
+#if 0
+
 	if (creatureMesh) {
 
 		// Setup transforms
@@ -208,7 +229,7 @@ void renderScene()
 		creatureMesh->render();
 		creatureMesh->postRender();
 	}
-	
+
 	if (planetMesh) {
 
 		// Setup transforms
@@ -220,6 +241,38 @@ void renderScene()
 		planetMesh->render();
 		planetMesh->postRender();
 	}
+#endif
+
+#if 1
+
+	if (saber) {
+
+		// Setup transforms
+		mat4 saberTranslate = translate(identity<mat4>(), vec3(-15.0f, 0.0f, -200.0f));
+		mat4 T = cameraTransform * saberTranslate;
+		glLoadMatrixf((GLfloat*)&T);
+
+		saber->preRender();
+		saber->render();
+		saber->postRender();
+	}
+
+	
+#endif
+
+#if 0
+
+	if (city2) {
+
+		// Setup transforms
+		glLoadMatrixf((GLfloat*)&cameraTransform);
+
+		city2->preRender();
+		city2->render();
+		city2->postRender();
+	}
+
+
 #endif
 
 }
